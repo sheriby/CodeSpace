@@ -17,6 +17,9 @@ List initlist() {
     list->size = 0;
     return list;
 }
+
+int size(List list) { return list->size; }
+
 Position find(ElementType ele, List list) {
     while (list) {
         if (list->ele == ele) {
@@ -29,6 +32,7 @@ Position find(ElementType ele, List list) {
 void insert(ElementType ele, List list) {
     Position pos = (Position)malloc(sizeof(struct ListNode));
     list->tail->next = pos;
+    pos->ele = ele;
     pos->next = NULL;
     list->tail = pos;
     list->size++;
@@ -89,30 +93,39 @@ void destroyList(List list) {
 }
 void printList(List list) {
     list = list->next;
+    if (!list) {
+        printf("List: []\n");
+        return;
+    }
     printf("List: [");
     while (list->next) {
         printf("%d, ", list->ele);
+        list = list->next;
     }
-    printf("%d]", list->ele);
+    printf("%d]\n", list->ele);
 }
 
 List mergeList(List list1, List list2) {
     List list = initlist();
+    Position pos = list;
     list->size = list1->size + list2->size;
+    list1 = list1->next;
+    list2 = list2->next;
     while (list1 && list2) {
         if (list1->ele < list2->ele) {
-            list->next = list1;
+            pos->next = list1;
             list1 = list1->next;
         } else {
-            list->next = list2;
+            pos->next = list2;
             list2 = list2->next;
         }
+        pos = pos->next;
     }
 
     if (list1) {
-        list->next = list1;
+        pos->next = list1;
     } else {
-        list->next = list2;
+        pos->next = list2;
     }
 
     return list;
